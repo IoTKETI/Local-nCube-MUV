@@ -17,6 +17,7 @@ var net = require('net');
 var ip = require('ip');
 var moment = require('moment');
 var fs = require('fs');
+var os = require('os');
 
 var mavlink = require('./mavlibrary/mavlink.js');
 
