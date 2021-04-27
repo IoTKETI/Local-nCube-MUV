@@ -396,27 +396,40 @@ function mavPortOpening() {
             if (mavPort == null) {
                 if (os.platform() === 'darwin') {
                     if (port.path.toString().includes('/dev/tty.u')) {
-                        mavport = port.path.toString();
+                        mavPort = new SerialPort(port.path.toString(), {
+                            baudRate: parseInt(mavBaudrate, 10),
+                        });
+
+                        mavPort.on('open', mavPortOpen);
+                        mavPort.on('close', mavPortClose);
+                        mavPort.on('error', mavPortError);
+                        mavPort.on('data', mavPortData);
                     }
                 }
                 else if (os.platform() === 'linux') {
                     if (port.path.toString().includes('/dev/tty')) {
-                        mavport = port.path.toString();
+                        mavPort = new SerialPort(port.path.toString(), {
+                            baudRate: parseInt(mavBaudrate, 10),
+                        });
+
+                        mavPort.on('open', mavPortOpen);
+                        mavPort.on('close', mavPortClose);
+                        mavPort.on('error', mavPortError);
+                        mavPort.on('data', mavPortData);
                     }
                 }
                 else if (os.platform() === 'win32') {
                     if (port.path.toString().includes('COM')) {
-                        mavport = port.path.toString();
+                        mavPort = new SerialPort(port.path.toString(), {
+                            baudRate: parseInt(mavBaudrate, 10),
+                        });
+
+                        mavPort.on('open', mavPortOpen);
+                        mavPort.on('close', mavPortClose);
+                        mavPort.on('error', mavPortError);
+                        mavPort.on('data', mavPortData);
                     }
                 }
-                mavPort = new SerialPort(port.path.toString(), {
-                    baudRate: parseInt(mavBaudrate, 10),
-                });
-
-                mavPort.on('open', mavPortOpen);
-                mavPort.on('close', mavPortClose);
-                mavPort.on('error', mavPortError);
-                mavPort.on('data', mavPortData);
             } else {
                 if (mavPort.isOpen) {
 
