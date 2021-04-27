@@ -60,7 +60,7 @@ exports.ready = function tas_ready() {
     }
     else if((my_drone_type === 'pixhawk') || (my_drone_type === 'ardupilot') || (my_drone_type === 'px4')) {
         mavPortNum = '/dev/ttyAMA0';
-        mavBaudrate = '57600';
+        mavBaudrate = '115200';
         mavPortOpening();
     }
     else {
