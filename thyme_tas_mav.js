@@ -767,8 +767,6 @@ function parseMavFromDrone(mavPacket) {
                     my_cnt_name = my_parent_cnt_name + '/' + my_sortie_name;
                     sh_adn.crtct(my_parent_cnt_name + '?rcn=0', my_sortie_name, 0, function (rsc, res_body, count) {
                     });
-                    cal_flag = 1;
-                    cal_sortiename = my_sortie_name; 
                     
                     for (var idx in mission_parent) {
                         if (mission_parent.hasOwnProperty(idx)) {
@@ -785,10 +783,6 @@ function parseMavFromDrone(mavPacket) {
             }
             else {
                 flag_base_mode = 0;
-                if (cal_flag == 1){
-                    cal_flag = 0;
-                    calculateFlightTime(cal_sortiename);
-                }
                 my_sortie_name = 'disarm';
                 my_cnt_name = my_parent_cnt_name + '/' + my_sortie_name;
             }
@@ -799,47 +793,6 @@ function parseMavFromDrone(mavPacket) {
     catch (e) {
         console.log(e.message);
     }
-}
-
-var end_arm_time = 0;
-var arming_time = 0;
-var flight_time = {};
-
-function calculateFlightTime(cal_sortiename) {
-    end_arm_time = moment();
-    arming_time = end_arm_time.diff(start_arm_time, 'second');
-    var sortie_name = cal_sortiename;
-    sh_adn.rtvct('/Mobius/Life_Prediction/History/' + conf.ae.name + '/la', 0, function (rsc, res_body, count) {
-        if (rsc == 2000) {
-            flight_time = res_body[Object.keys(res_body)[0]].con;
-            if (flight_time.total_flight_time == 0){
-                flight_time.total_flight_time = arming_time;
-            }
-            else {
-                flight_time.total_flight_time += arming_time;
-            }
-            flight_time.arming_time = arming_time;
-            flight_time.sortie_name = sortie_name;
-            console.log('Flight Time : ', flight_time);
-
-            sh_adn.crtci('/Mobius/Life_Prediction/History/' + conf.ae.name + '?rcn=0', 0, flight_time, null, function () {
-            });
-    
-        } else {
-            sh_adn.crtct('/Mobius/Life_Prediction/History' + '?rcn=0', conf.ae.name, 0, function (rsc, res_body, count) {
-            });
-            
-            flight_time.total_flight_time = arming_time;
-            flight_time.arming_time = arming_time;
-            flight_time.sortie_name = sortie_name;
-            console.log('Flight Time : ', flight_time);
-            sh_adn.crtci('/Mobius/Life_Prediction/History/' + conf.ae.name + '?rcn=0', 0, flight_time, null, function () {
-            });
-
-            console.log('x-m2m-rsc : ' + rsc + ' <----' + res_body);
-        }
-    });
-    cal_sortiename = '';
 }
 
 function createMissionContainer(idx) {
